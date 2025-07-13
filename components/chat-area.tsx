@@ -13,6 +13,15 @@ export function ChatArea() {
   const { messages, currentSession, language, isResponding } = useChatStore();
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Debug logging
+  useEffect(() => {
+    console.log('ChatArea - Messages updated:', {
+      messageCount: messages.length,
+      isResponding,
+      sessionId: currentSession?.id,
+      lastMessage: messages[messages.length - 1]
+    });
+  }, [messages, isResponding, currentSession?.id]);
   const itemCount = messages.length + (isResponding ? 1 : 0);
 
   const rowVirtualizer = useVirtualizer({
@@ -72,43 +81,23 @@ export function ChatArea() {
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <div className="flex-1 overflow-hidden">
-        <ScrollArea className="h-full" ref={scrollRef}>
-          {itemCount > 0 ? (
-            <div
-              className="w-full relative"
-              style={{
-                height: `${rowVirtualizer.getTotalSize()}px`,
-              }}
-            >
-              {virtualItems.map((virtualItem) => {
-                const isLoaderRow = virtualItem.index >= messages.length;
-                const message = messages[virtualItem.index];
-
-                return (
-                  <div
-                    key={isLoaderRow ? 'loader' : message.id}
-                    className="absolute top-0 left-0 w-full"
-                    style={{
-                      transform: `translateY(${virtualItem.start}px)`,
-                    }}
-                    ref={rowVirtualizer.measureElement}
-                    data-index={virtualItem.index}
-                  >
-                    <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">
-                      {isLoaderRow ? (
-                        <TypingIndicator />
-                      ) : (
-                        <ChatBubble
-                          message={message}
-                          isLastMessage={virtualItem.index === messages.length - 1 && !isResponding}
-                          isResponding={isResponding}
-                        />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+        <ScrollArea className="h-full">
+          <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">
+            {messages.map((message, index) => (
+              <ChatBubble
+                key={`message-${message.id}`}
+                message={message}
+                isLastMessage={index === messages.length - 1 && !isResponding}
+                isResponding={isResponding}
+              />
+            ))}
+            {isResponding && <TypingIndicator />}
+          </div>
+        </ScrollArea>
+      </div>
+    </div>
+  );
+}
           ) : (
             <div className="max-w-5xl mx-auto p-3 sm:p-6 lg:p-8">
               <div className="text-center text-gray-500 pt-10">
