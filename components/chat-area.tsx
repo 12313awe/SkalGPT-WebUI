@@ -82,22 +82,18 @@ export function ChatArea() {
     <div className="flex-1 flex flex-col min-h-0">
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-full">
-          <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">
-            {messages.map((message, index) => (
-              <ChatBubble
-                key={`message-${message.id}`}
-                message={message}
-                isLastMessage={index === messages.length - 1 && !isResponding}
-                isResponding={isResponding}
-              />
-            ))}
-            {isResponding && <TypingIndicator />}
-          </div>
-        </ScrollArea>
-      </div>
-    </div>
-  );
-}
+          {messages.length > 0 ? (
+            <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8">
+              {messages.map((message, index) => (
+                <ChatBubble
+                  key={`message-${message.id}`}
+                  message={message}
+                  isLastMessage={index === messages.length - 1 && !isResponding}
+                  isResponding={isResponding}
+                />
+              ))}
+              {isResponding && <TypingIndicator />}
+            </div>
           ) : (
             <div className="max-w-5xl mx-auto p-3 sm:p-6 lg:p-8">
               <div className="text-center text-gray-500 pt-10">
