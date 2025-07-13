@@ -19,7 +19,9 @@ export function ChatArea() {
       messageCount: messages.length,
       isResponding,
       sessionId: currentSession?.id,
-      lastMessage: messages[messages.length - 1]
+      lastMessage: messages[messages.length - 1],
+      allMessageIds: messages.map(m => m.id),
+      timestamp: new Date().toISOString()
     });
   }, [messages, isResponding, currentSession?.id]);
   const itemCount = messages.length + (isResponding ? 1 : 0);
